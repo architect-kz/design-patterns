@@ -37,7 +37,27 @@ class Logger:
     A logger class for logging messages. This class is a singleton, ensuring that only one logger instance is used
     throughout the application.
     """
+
     def __init__(self):
         print("Initializing Logger...")
         self.logs = []
 
+    def log(self, message):
+        self.logs.append(message)
+        print(f"Log: {message}")
+
+    def show_logs(self):
+        return self.logs
+
+
+"""
+# Usage
+logger1 = Logger()
+logger2 = Logger()
+
+logger1.log("Initializing database connection.")
+logger2.log("Database connection successful.")
+
+print(logger1 is logger2)  # Output: True, both instances are the same
+print(logger1.show_logs()) # Shows logs from both logger1 and logger2
+"""
