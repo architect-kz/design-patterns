@@ -1,0 +1,9 @@
+Cretional
+- singleton
+
+Structural
+- adapter
+
+Behavioral
+- chain of responsibility
+
