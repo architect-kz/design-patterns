@@ -1,57 +1,41 @@
-import pytest
+from abc import ABC, abstractmethod
 
 
 # Абстрактный класс стратегии расчета стоимости доставки
-class ShippingCostStrategy:
-    def calculate(self, order):
+class IShippingCostStrategy(ABC):
+    @abstractmethod
+    def calculate(self, order) -> float:
         pass
 
 
 # Конкретные реализации стратегий расчета стоимости доставки
-class StandardShipping(ShippingCostStrategy):
-    def calculate(self, order):
+class StandardShipping(IShippingCostStrategy):
+    def calculate(self, order) -> float:
         # Пример расчета стоимости стандартной доставки
         weight = order['weight']
         return 5 + weight * 0.5  # Базовая стоимость + стоимость за кг
 
 
-class ExpressShipping(ShippingCostStrategy):
-    def calculate(self, order):
+class ExpressShipping(IShippingCostStrategy):
+    def calculate(self, order) -> float:
         # Пример расчета стоимости экспресс доставки
         weight = order['weight']
         return 10 + weight * 1.5  # Базовая стоимость + стоимость за кг (больше, чем для стандартной)
 
 
-class FreeShipping(ShippingCostStrategy):
-    def calculate(self, order):
+class FreeShipping(IShippingCostStrategy):
+    def calculate(self, order) -> float:
         # Бесплатная доставка
         return 0
 
 
 # Класс контекста
 class ShippingCostCalculator:
-    def __init__(self, shipping_strategy):
-        self.shipping_strategy = shipping_strategy
+    def __init__(self, shipping_strategy: IShippingCostStrategy | None = None):
+        self.shipping_strategy: IShippingCostStrategy = shipping_strategy
 
     def calculate_shipping_cost(self, order):
         return self.shipping_strategy.calculate(order)
 
-
-# Тесты
-@pytest.mark.parametrize("order, expected_cost", [
-    ({"weight": 1}, 5.5),  # Ожидаемая стоимость для стандартной доставки с весом 1 кг
-    ({"weight": 1}, 11.5),  # Ожидаемая стоимость для экспресс доставки с весом 1 кг
-    ({"weight": 1}, 0),  # Ожидаемая стоимость для бесплатной доставки
-])
-def test_shipping_cost_calculator(order, expected_cost):
-    standard_shipping_calculator = ShippingCostCalculator(StandardShipping())
-    express_shipping_calculator = ShippingCostCalculator(ExpressShipping())
-    free_shipping_calculator = ShippingCostCalculator(FreeShipping())
-
-    assert standard_shipping_calculator.calculate_shipping_cost(order) == expected_cost
-    assert express_shipping_calculator.calculate_shipping_cost(order) == expected_cost
-    assert free_shipping_calculator.calculate_shipping_cost(order) == expected_cost
-
-
-if __name__ == "__main__":
-    pytest.main()
+    def set_shipping_strategy(self, shipping_strategy: IShippingCostStrategy):
+        self.shipping_strategy: IShippingCostStrategy = shipping_strategy

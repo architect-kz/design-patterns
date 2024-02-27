@@ -30,10 +30,12 @@ class Subject(ISubject):
         ...
 
     def attach(self, observer):
-        self._observers.append(observer)
+        if observer not in self._observers:
+            self._observers.append(observer)
 
     def detach(self, observer):
-        self._observers.remove(observer)
+        if observer in self._observers:
+            self._observers.remove(observer)
 
     def notify(self, data):
         for observer in self._observers:
@@ -50,13 +52,14 @@ class SMSNotifier(IObserver):
         print(f"Sending SMS notification: {data}")
 
 
-# Клиентский код
-subject = Subject()
-email_notifier = EmailNotifier()
-sms_notifier = SMSNotifier()
+if __name__ == '__main__':
+    # Клиентский код
+    subject = Subject()
+    email_notifier = EmailNotifier()
+    sms_notifier = SMSNotifier()
 
-subject.attach(email_notifier)
-subject.attach(sms_notifier)
+    subject.attach(email_notifier)
+    subject.attach(sms_notifier)
 
-# При изменении состояния субъекта, происходит уведомление всех наблюдателей.
-subject.notify("Important update!")
+    # При изменении состояния субъекта, происходит уведомление всех наблюдателей.
+    subject.notify("Important update!")
